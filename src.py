@@ -51,8 +51,8 @@ class Stitcher:
         (kpsA,featuresA) = self.detectKeyPointsAndFeatures(imageA)
         (kpsB,featuresB) = self.detectKeyPointsAndFeatures(imageB)
 
-        ##match = self.matchKeyPoints(kpsA,featuresA,kpsB,featuresB,ratio,threshold)
-        match = self.matchKeyPointsWithImplementedRANSAC(kpsA, featuresA, kpsB, featuresB, ratio)
+        match = self.matchKeyPoints(kpsA,featuresA,kpsB,featuresB,ratio,threshold)
+        ##match = self.matchKeyPointsWithImplementedRANSAC(kpsA, featuresA, kpsB, featuresB, ratio)
 
         ## Modified to avoid none condition
         if match is None:
@@ -167,7 +167,7 @@ class Stitcher:
     ## Now stitch the images given the directory
 
     def stitchImagesInDirectory(self,dir):
-        types = [".jpg",".JPG",".JPEG"]
+        types = [".jpg",".JPG",".JPEG",".png"]
         files = natsorted(os.listdir(dir))
 
         ## Getting files of types required
@@ -182,11 +182,11 @@ class Stitcher:
                 print("stitched the image ",im)
                 image = cv2.imread(os.path.join(dir,im))
                 stitchedImage = self.stitch((stitchedImage,image))
-                ##stitchedImage = self.cropImageOnly(stitchedImage)
+                stitchedImage = self.cropImageOnly(stitchedImage)
                 tempDir = dir + '/stitched/'
                 tempPath = os.path.join(tempDir,im)
                 ##print(tempImage)
-                stitchedImage = stitchedImage[:, :20000, :]
+                ##stitchedImage = stitchedImage[:, :4000, :]
                 cv2.imwrite(tempPath, stitchedImage)
         except :
             print("No Images in the directory")
@@ -243,7 +243,7 @@ class Stitcher:
         return stitchedImage
 
     def stichImagesRecursively(self,dir):
-        types = [".jpg", ".JPG", ".JPEG"]
+        types = [".jpg", ".JPG", ".JPEG",".png"]
         files = natsorted(os.listdir(dir))
 
         ## Getting files of types required
@@ -275,7 +275,7 @@ class Stitcher:
 
             stitchedImage = self.cropImageOnly(stitchedImage)
             #print(stitchedImage.shape)
-            #stitchedImage = stitchedImage[:,:20000,:]
+            #stitchedImage = stitchedImage[:,:5000,:]
             cv2.imwrite(tempPath, stitchedImage)
 
             return stitchedImage
@@ -285,13 +285,13 @@ class Stitcher:
         leftImage,rightImage = images
 
         middleImage = self.stitch((cv2.imread(os.path.join(dir, dirImages[mid])),cv2.imread(os.path.join(dir, dirImages[mid+1]))))
-        #middleImage = self.cropImageOnly(middleImage)
+        middleImage = self.cropImageOnly(middleImage)
 
         leftMost = self.stitch((leftImage,middleImage))
-        #leftMost = self.cropImageOnly(leftMost)
+        leftMost = self.cropImageOnly(leftMost)
 
         rightMost = self.stitch((middleImage,rightImage))
-        #rightMost = self.cropImageOnly(rightMost)
+        rightMost = self.cropImageOnly(rightMost)
 
         #leftMost = leftMost[:,:10000,:]
         #rightMost = rightMost[:,:10000,:]
@@ -302,14 +302,15 @@ class Stitcher:
 if __name__ == '__main__':
 
     st = Stitcher()
-    dir = sys.argv[1]
+    #dir = sys.argv[1]
 
-    #dir = '/Users/sainikhilmaram/OneDrive/UCSB courses/Winter 2018/Advance Topics in Computer Vision/HW1/Data/intersection/'
+    dir = '/Users/sainikhilmaram/OneDrive/UCSB courses/Winter 2018/Advance Topics in Computer Vision/HW1/Data/office/'
+    ##dir = '/Users/sainikhilmaram/OneDrive/UCSB courses/Winter 2018/Advance Topics in Computer Vision/HW1/Data/intersection/'
 
-    #stitchedImage = st.stitchImagesInDirectory(dir)
+    stitchedImage = st.stitchImagesInDirectory(dir)
 
     #stitchedImage = st.stitchImagesInDirectoryAlternately(dir)
-    stitchedImage = st.stichImagesRecursively(dir)
+    ##stitchedImage = st.stichImagesRecursively(dir)
     stitchedImage = st.cropImageOnly(stitchedImage)
 
     #plt.imshow(stitchedImage)

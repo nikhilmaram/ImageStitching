@@ -302,10 +302,7 @@ class Stitcher:
 if __name__ == '__main__':
 
     st = Stitcher()
-    #dir = sys.argv[1]
-
-    dir = '/Users/sainikhilmaram/OneDrive/UCSB courses/Winter 2018/Advance Topics in Computer Vision/HW1/Data/office/'
-    ##dir = '/Users/sainikhilmaram/OneDrive/UCSB courses/Winter 2018/Advance Topics in Computer Vision/HW1/Data/intersection/'
+    dir = sys.argv[1]
 
     stitchedImage = st.stitchImagesInDirectory(dir)
 
